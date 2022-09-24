@@ -53,20 +53,36 @@ app.Run();
 
 void ListenToCustomerCreatedCommands()
 {
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
-        {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var customer = JsonSerializer.Deserialize<Customer>(message);
+    var consumer = new EventingBasicConsumer(channel);
+    consumer.Received += (model, ea) =>
+    {
+        var body = ea.Body.ToArray();
+        var message = Encoding.UTF8.GetString(body);
+        var customer = JsonSerializer.Deserialize<Customer>(message);
 
-            Console.WriteLine(" [x] Received {0}", customer);
+        Console.WriteLine(" [x] Received {0}", customer);
 
-            customers.Add(customer);
-        };
+        customers.Add(customer);
+        //Don't do that ;)
+        SendEvent(customer);
+    };
             
-        channel.BasicConsume(queue: "clinic-create-customer",
+    channel.BasicConsume(queue: "clinic-create-customer",
                                 autoAck: true,
                                 consumer: consumer);
 }
+
+void SendEvent(Customer customer)
+{
+    var message = JsonSerializer.Serialize(customer);
+    var body = Encoding.UTF8.GetBytes(message);
+
+    channel.BasicPublish(exchange: "clinic-customer-created",
+                                 routingKey: "",
+                                 basicProperties: null,
+                                 body: body);
+
+    Console.WriteLine(" [x] Sent 'clinic-customer-created':'{0}'", message);
+}
+
 public record Customer(Guid Id, string FistName, string LastName, string Address, string CreditCardNo);
