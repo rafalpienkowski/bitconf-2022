@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Infrastructure", "Clinic.Infrastructure\Clinic.Infrastructure.csproj", "{CB3C28EE-A311-4DC1-842A-F14F7306761E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Customers", "Clinic.Customers\Clinic.Customers.csproj", "{8F50FD7E-6A68-497C-BBE1-BBF353C95EED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Patients", "Clinic.Patients\Clinic.Patients.csproj", "{7F5555FE-9E74-4BDB-88D4-2513172C713A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Payments", "Clinic.Payments\Clinic.Payments.csproj", "{1851563F-2BE6-4F33-9868-AF97FCC105A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Schedules", "Clinic.Schedules\Clinic.Schedules.csproj", "{503FB898-38DF-4B29-AED8-72914ACBFD80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clinic.Services", "Clinic.Services\Clinic.Services.csproj", "{385563D6-ED5C-4A35-8424-F2B528FA4C7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CB3C28EE-A311-4DC1-842A-F14F7306761E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB3C28EE-A311-4DC1-842A-F14F7306761E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB3C28EE-A311-4DC1-842A-F14F7306761E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB3C28EE-A311-4DC1-842A-F14F7306761E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F50FD7E-6A68-497C-BBE1-BBF353C95EED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F50FD7E-6A68-497C-BBE1-BBF353C95EED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F50FD7E-6A68-497C-BBE1-BBF353C95EED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F50FD7E-6A68-497C-BBE1-BBF353C95EED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5555FE-9E74-4BDB-88D4-2513172C713A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5555FE-9E74-4BDB-88D4-2513172C713A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5555FE-9E74-4BDB-88D4-2513172C713A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5555FE-9E74-4BDB-88D4-2513172C713A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1851563F-2BE6-4F33-9868-AF97FCC105A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1851563F-2BE6-4F33-9868-AF97FCC105A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1851563F-2BE6-4F33-9868-AF97FCC105A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1851563F-2BE6-4F33-9868-AF97FCC105A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503FB898-38DF-4B29-AED8-72914ACBFD80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503FB898-38DF-4B29-AED8-72914ACBFD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503FB898-38DF-4B29-AED8-72914ACBFD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503FB898-38DF-4B29-AED8-72914ACBFD80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{385563D6-ED5C-4A35-8424-F2B528FA4C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385563D6-ED5C-4A35-8424-F2B528FA4C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385563D6-ED5C-4A35-8424-F2B528FA4C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385563D6-ED5C-4A35-8424-F2B528FA4C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

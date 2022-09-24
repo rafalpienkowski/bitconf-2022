@@ -3,86 +3,87 @@ using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-var builder = WebApplication.CreateBuilder(args);
-
 var customers = new List<Customer>();
 
-var factory = new ConnectionFactory() { HostName = "localhost" };
-var connection = factory.CreateConnection();
-var channel = connection.CreateModel();
-ListenToCustomerCreatedCommands();
+var factory = new ConnectionFactory { HostName = "localhost" };
+using var connection = factory.CreateConnection();
+using var channel = connection.CreateModel();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+ListenToCreateCustomerCommands();
+
+var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
-app.MapGet("/customers", () => customers);
-app.MapPost("/customers", (Customer customer) =>{
-
-    string message = JsonSerializer.Serialize(customer);
-    var body = Encoding.UTF8.GetBytes(message);
-
-    var properties = channel.CreateBasicProperties();
-    properties.Headers = new Dictionary<string, object>();
-    properties.Headers.Add("app-version", "0.1-beta");
-    properties.Headers.Add("full-name", typeof(Customer).AssemblyQualifiedName);
-
-    channel.BasicPublish(exchange: "",
-                            routingKey: "clinic-create-customer",
-                            basicProperties: properties,
-                            body: body);
-    Console.WriteLine(" [x] Sent {0}", message);
-
-    return Results.Accepted();
-});
+app.MapGet("/customers", () => customers).WithName("GetCustomers");
+app.MapPost("/customers", SendCommand).WithName("CreateCustomer");
 
 app.Run();
 
+void SendCommand(CreateCustomer createCustomer)
+{
+    var message = JsonSerializer.Serialize(createCustomer);
+    var body = Encoding.UTF8.GetBytes(message);
+    
+    channel.BasicPublish(exchange: "", routingKey: "clinic-customers-create-customer", basicProperties: null, body);
+    Console.WriteLine(" [Customers] Command Sent: {0}", createCustomer);
+}
 
-void ListenToCustomerCreatedCommands()
+void ListenToCreateCustomerCommands()
 {
     var consumer = new EventingBasicConsumer(channel);
-    consumer.Received += (model, ea) =>
+    consumer.Received += (model, eventArgs) =>
     {
-        var body = ea.Body.ToArray();
+        var body = eventArgs.Body.ToArray();
         var message = Encoding.UTF8.GetString(body);
-        var customer = JsonSerializer.Deserialize<Customer>(message);
+        Console.WriteLine(" [Customers] {0}", message);
 
-        Console.WriteLine(" [x] Received {0}", customer);
+        var createCustomer = JsonSerializer.Deserialize<CreateCustomer>(message);
+        if (createCustomer == null)
+        {
+            Console.WriteLine(" [Customers] empty create customer command received");
+            return;
+        }
 
+        if (customers.Any(p => p.Id == createCustomer.Id))
+        {
+            Console.WriteLine(" [Customers] Customer with Id: '{0}' already exists", createCustomer.Id);
+            return;
+        }
+
+        var customer = new Customer(createCustomer.Id, createCustomer.FirstName, createCustomer.LastName,
+            createCustomer.Address, createCustomer.CreditCard);
+        
         customers.Add(customer);
-        //Don't do that ;)
-        SendEvent(customer);
+        Console.WriteLine(" [Customers] Customer created: {0}", customer);
+
+        var customerCreated = new CustomerCreated(customer.Id, customer.FirstName, customer.LastName, customer.Address, customer.CreditCard);
+        PublishEvent(customerCreated);
     };
-            
-    channel.BasicConsume(queue: "clinic-create-customer",
-                                autoAck: true,
-                                consumer: consumer);
+
+    channel.BasicConsume(queue: "clinic-customers-create-customer", autoAck: true, consumer);
+    Console.WriteLine(" [Customers] Waiting for commands");
 }
 
-void SendEvent(Customer customer)
+void PublishEvent(CustomerCreated patientCreated)
 {
-    var message = JsonSerializer.Serialize(customer);
+    var message = JsonSerializer.Serialize(patientCreated);
     var body = Encoding.UTF8.GetBytes(message);
-
-    channel.BasicPublish(exchange: "clinic-customer-created",
-                                 routingKey: "",
-                                 basicProperties: null,
-                                 body: body);
-
-    Console.WriteLine(" [x] Sent 'clinic-customer-created':'{0}'", message);
+    channel.BasicPublish(exchange: "clinic-public-events",
+        routingKey: "customer-created",
+        basicProperties: null,
+        body: body);
+    Console.WriteLine(" [Customers] Sent {0}", message);
 }
 
-public record Customer(Guid Id, string FistName, string LastName, string Address, string CreditCardNo);
+record Customer(Guid Id, string FirstName, string LastName, string Address, string CreditCard);
+
+record CreateCustomer(Guid Id, string FirstName, string LastName, string Address, string CreditCard);
+
+record CustomerCreated(Guid Id, string FirstName, string LastName, string Address, string CreditCard);
