@@ -47,8 +47,7 @@ void SetupPayments()
         exclusive: false);
     channel.QueueBind(queue: queueName, exchange: "clinic-public-events", routingKey: "customer-created");
     
-    var chargeCustomerQueueName = channel.QueueDeclare("clinic-payments-charge-patient", durable: true, autoDelete: false, exclusive: false);
-    channel.QueueBind(queue: chargeCustomerQueueName, exchange: "clinic-public-events", routingKey: "charge-patient");
+    channel.QueueDeclare("clinic-payments-charge-patient", durable: true, autoDelete: false, exclusive: false);
 }
 
 void SetupSchedules()
